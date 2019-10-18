@@ -1,0 +1,20 @@
+{
+  "name": "SNP STEAM Academy Class Notifications",
+  "description": "Created to  Written by Nathan Rowbottom on his own time with his own resources, all rights reserved.provide on class ending",
+  "version": "1.0",
+  "manifest_version": 2,
+  "permissions": ["alarms", "notifications", "storage"],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "browser_action": {
+    "default_title": "SNP STEAM 5 Minute Warning Settings",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "SteamAcademy16.png",
+    "32": "SteamAcademy32.png",
+    "48": "SteamAcademy48.png",
+    "128": "SteamAcademy128.png"
+  }
+}

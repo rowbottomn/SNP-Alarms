@@ -1,0 +1,41 @@
+<!-- Nathan Rowbottom for SNP Steam Academey-->
+<html>
+  <head>
+    <title>SNP STEAM Academy Class Notifications Settings</title>
+    <style>
+      body {
+        text-align: center;
+      }
+
+      #SteamImage {
+        width: 64px;
+        margin: 5px;
+      }
+
+      button {
+        margin: 5px;
+        outline: #6711bd;
+      }
+
+      button:hover {
+        outline: #6711bd dotted thick;
+      }
+    </style>
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+     -->
+  </head>
+  <body>
+      <img src='./SteamAcademy64.png' id='SteamImage'>
+      <!-- This changes the settings to allow for 5 minutes warning or to cancel alarms TESTING  -->
+      
+      <button id='5min' value='5'>Notify in 5 Minutes</button>
+
+      <button id='cancelAlarm'>Cancel Alarms</button>
+   <!-- link to non-persistent background script for extension options -->
+   <script src="popup.js"></script>
+  </body>
+</html>
