@@ -1,52 +1,77 @@
-﻿'use strict';
+/**SNP Alarms 
+by Nathan Rowbottom on his own time and and with his own resources; all rights reserved
+A google chrome extension that adds time notification events based on the school schedule
+10/21/2019
+Times are registered every day and notifications for events that have not passed. 
+Number of events that are still stored are indicated on the extension badge
+Notification has buttons to allow snooze/dismiss events
 
+TO DO:
+Parameterize the snooze amount and the warning time by the same variable
+Read times from a google sheets 
+Allow admin to toggle special schedule
+Test to make sure times are synchonized regardless of login times
+Make sure events happen daily <== looks like a new window needs to open explicitly.
+Make sure period titles occur in notification
+Clean up popup
+**/
+
+'use strict';
+
+//the titles of the periods for the warning notifications
 var period = ['STEAM Work', 'Period 1', 'Period 2', 'Lunch', 'Period 3', 'Period 4'];
-var hours = [9, 11, 12, 13, 14, 15];
-var minutes = [55, 0, 5, 0, 0, 5];
-//var hours = [];
-//var minutes = [];
+
+//the notification times; currently 5 minutes left in class.
+var hours = 	[9, 	11, 	12, 	13, 	14, 	15, 	16];
+var minutes = 	[55, 	0, 	5, 	0, 	0, 	5, 	55];
+
+//not used - remove
 var count = 1;
 var nextAlarmMinutes = 0;
 
+//if testing will make several notifications separated by a minute
 var testing = false;
 
 var date = new Date();
+
+//not used - remove
 var convertToMilliseconds = function(hours, minutes){
   return hours*3600000 + minutes*60000;  
 };
 
+// used to get the amount of milliseconds between a period end and the current time 
 var getTimeDiff = function(hours, minutes){
   date = new Date()
   return (hours - date.getHours())*3600000 + (minutes - date.getMinutes())*60000 - date.getSeconds()*1000 - date.getMilliseconds();
 };
 
+//used to update the extension badge with the number of alarms remaining
 var updateNumAlarms = function(){
  var numAlarms = '';
  chrome.alarms.getAll(function(alarms){
     numAlarms = ''+alarms.length;
     //console.log(''+numAlarms);
     chrome.browserAction.setBadgeText({text: ''+numAlarms});
-
   });
 };
 
+//used to actually set the notification alarms
 var setTimes = function(){
   date = new Date();
   for(var i = 0; i < period.length; i++){
     var tempPeriod = period[i];
     if(testing){
-      
+	//make a series of entries starting 2 minutes in the future to avoid 
       hours.push(date.getHours());
-      minutes.push(date.getMinutes()+i+2);
-      
+      minutes.push(date.getMinutes()+i+2);      
     } 
     var timeDiff = getTimeDiff(hours[i], minutes[i]);
     if (timeDiff > 0){
+	//when is snafu so do not use!!!
      // chrome.alarms.create(tempPeriod, {when: i * 60000 });
       chrome.alarms.create(tempPeriod, {delayInMinutes: timeDiff/60000 });
-    
-  
     }
+
     updateNumAlarms();
     //chrome.sync.set({tempPeriod:period[i]});
     //var tempHours = "hours"+i;
@@ -56,6 +81,15 @@ var setTimes = function(){
 
   }
 };
+
+chrome.windows.onCreated.addListener(function(){
+    
+   setTimes();
+});
+
+chrome.tabs.onActivated.addListener(function(){
+   setTimes();
+});
 
 //force the script to run when a window is first opened.
 chrome.windows.onCreated.addListener(function() {
