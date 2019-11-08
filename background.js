@@ -5,15 +5,16 @@ A google chrome extension that adds time notification events based on the school
 Times are registered every day and notifications for events that have not passed. 
 Number of events that are still stored are indicated on the extension badge
 Notification has buttons to allow snooze/dismiss events
-
+11/8/2019
+Notifications are onTabActivated event
+Notifications are cleaned up properly
 TO DO:
 Parameterize the snooze amount and the warning time by the same variable
 Read times from a google sheets 
 Allow admin to toggle special schedule
 Test to make sure times are synchonized regardless of login times
-Make sure events happen daily <== looks like a new window needs to open explicitly.
 Make sure period titles occur in notification
-Clean up popup
+Tidy up code
 **/
 
 'use strict';
@@ -30,7 +31,7 @@ var count = 1;
 var nextAlarmMinutes = 0;
 
 //if testing will make several notifications separated by a minute
-var testing = false;
+var testing = true;
 
 var date = new Date();
 
@@ -57,14 +58,21 @@ var updateNumAlarms = function(){
 
 //used to actually set the notification alarms
 var setTimes = function(){
+	if (testing){
+	    hours = [];
+    	     minutes = [];
+	}
   date = new Date();
+  //clear up old alarms. 
+  chrome.alarms.clearAll(); 
   for(var i = 0; i < period.length; i++){
-    var tempPeriod = period[i];
+
     if(testing){
 	//make a series of entries starting 2 minutes in the future to avoid 
       hours.push(date.getHours());
       minutes.push(date.getMinutes()+i+2);      
     } 
+    var tempPeriod = period[i];
     var timeDiff = getTimeDiff(hours[i], minutes[i]);
     if (timeDiff > 0){
 	//when is snafu so do not use!!!
@@ -84,7 +92,7 @@ var setTimes = function(){
 
 chrome.windows.onCreated.addListener(function(){
     
-   setTimes();
+  // setTimes();
 });
 
 chrome.tabs.onActivated.addListener(function(){
