@@ -31,7 +31,7 @@ var count = 1;
 var nextAlarmMinutes = 0;
 
 //if testing will make several notifications separated by a minute
-var testing = true;
+var testing = false;
 
 var date = new Date();
 
